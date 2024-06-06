@@ -1,10 +1,9 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:trackbuddy/models/MiniTask.dart';
 import 'package:trackbuddy/models/Task.dart';
 import 'package:trackbuddy/services/miniTask_services.dart';
+import 'package:trackbuddy/widgets/bottomNav.dart';
 
 class TaskDetails extends StatefulWidget {
   final Tasks task;
@@ -15,14 +14,26 @@ class TaskDetails extends StatefulWidget {
 }
 
 class _TaskDetailsState extends State<TaskDetails> {
-  final MiniTaskService miniTaskService = MiniTaskService(); 
+  final MiniTaskService miniTaskService = MiniTaskService();
   bool isChecked = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xffF6F6F6),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // Handle FAB press
+        },
+        backgroundColor: const Color(0xffF26E56),
+        child: const Icon(
+          Icons.add,
+          size: 40,
+          color: Colors.white,
+        ),
+        
+      ),
       body: Padding(
-        padding: const EdgeInsets.fromLTRB(30,30,30,0),
+        padding: const EdgeInsets.fromLTRB(30, 30, 30, 0),
         child: ListView(
           children: [
             appBar(context),
@@ -38,7 +49,6 @@ class _TaskDetailsState extends State<TaskDetails> {
               height: 30,
             ),
             checkist(),
-            
           ],
         ),
       ),
@@ -59,17 +69,19 @@ class _TaskDetailsState extends State<TaskDetails> {
         ),
         const SizedBox(height: 10),
         if (widget.task.miniTasks != null && widget.task.miniTasks!.isNotEmpty)
-        Column(
-          children: [
-            for (int index = 0; index < widget.task.miniTasks!.length; index++)
-              Column(
-                children: [
-                  minitask(widget.task.miniTasks![index]),
-                  const SizedBox(height: 15), 
-                ],
-              ),
-          ],
-        )
+          Column(
+            children: [
+              for (int index = 0;
+                  index < widget.task.miniTasks!.length;
+                  index++)
+                Column(
+                  children: [
+                    minitask(widget.task.miniTasks![index]),
+                    const SizedBox(height: 15),
+                  ],
+                ),
+            ],
+          )
         else
           const Text('No mini tasks available'),
       ],
@@ -98,10 +110,12 @@ class _TaskDetailsState extends State<TaskDetails> {
                 value: miniTask.status == 'completed' ? true : false,
                 onChanged: (newValue) {
                   setState(() {
-                    miniTask.status == 'completed' ? miniTask.status = 'pending': miniTask.status = 'completed';
+                    miniTask.status == 'completed'
+                        ? miniTask.status = 'pending'
+                        : miniTask.status = 'completed';
                     //update status api
-                    //miniTaskService.updateMiniTaskStatus(miniTask.id);
-                  }); 
+                    miniTaskService.updateMiniTaskStatus(miniTask.id);
+                  });
                 },
               ),
             ),
@@ -231,7 +245,12 @@ Row appBar(context) {
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
       GestureDetector(
-        onTap: () => Navigator.pop(context),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const BottomNav()),
+          );
+        },
         child: Container(
           padding: EdgeInsets.fromLTRB(20, 15, 10, 15),
           decoration: BoxDecoration(
@@ -245,7 +264,8 @@ Row appBar(context) {
       Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
         decoration: BoxDecoration(
-            color: const Color(0xffFEC347), borderRadius: BorderRadius.circular(15)),
+            color: const Color(0xffFEC347),
+            borderRadius: BorderRadius.circular(15)),
         child: const Text(
           'in progress',
           style: TextStyle(

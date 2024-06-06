@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:trackbuddy/screens/homePage.dart';
 import 'package:trackbuddy/widgets/bottomNav.dart';
 
 void main() {

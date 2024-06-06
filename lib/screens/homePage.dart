@@ -70,8 +70,9 @@ class _HomePageState extends State<HomePage> {
                 int completedTasks = task.miniTasks!
                     .where((miniTask) => miniTask.status == 'completed')
                     .length;
-                double completionPercentage =
-                    task.miniTasks!.isNotEmpty ? (completedTasks / task.miniTasks!.length) : 0.0;
+                double completionPercentage = task.miniTasks!.isNotEmpty
+                    ? (completedTasks / task.miniTasks!.length)
+                    : 0.0;
                 return Stack(
                   children: [
                     GestureDetector(
@@ -79,59 +80,73 @@ class _HomePageState extends State<HomePage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => TaskDetails(task: task,)),
+                              builder: (context) => TaskDetails(
+                                    task: task,
+                                  )),
                         );
                       },
                       child: Container(
-                        height: 110,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 15, vertical: 10),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                            border:
-                                Border.all(color: Colors.black, width: 1.5)),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Text(
-                                  task.title,
-                                  style: const TextStyle(
-                                      color: Color(0xff000000),
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold),
+                        child: Container(
+                          height: 110,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 15, vertical: 10),
+                          decoration: BoxDecoration(
+                            color: const Color(0xffF6F6F6),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black,
+                                  spreadRadius: 0, // Spread radius
+                                  blurRadius: 0, // Blur radius
+                                  offset: Offset(
+                                      0, 3),
                                 ),
-                                SizedBox(
-                                  width: MediaQuery.of(context).size.width / 2,
-                                  child: Text(
-                                    task.description,
+                              ],
+                              borderRadius: BorderRadius.circular(15),
+                              border:
+                                  Border.all(color: Colors.black, width: 1.5)),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Text(
+                                    task.title,
                                     style: const TextStyle(
                                         color: Color(0xff000000),
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w300),
-                                    overflow: TextOverflow.ellipsis,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold),
                                   ),
-                                ),
-                                Row(
-                                  children: [
-                                    const Icon(Icons.check_circle_outline),
-                                    Text(
-                                      task.miniTasks!.length.toString() +
-                                          ' tasks',
+                                  SizedBox(
+                                    width: MediaQuery.of(context).size.width / 2,
+                                    child: Text(
+                                      task.description,
                                       style: const TextStyle(
                                           color: Color(0xff000000),
                                           fontSize: 13,
-                                          fontWeight: FontWeight.w500),
+                                          fontWeight: FontWeight.w300),
+                                      overflow: TextOverflow.ellipsis,
                                     ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      const Icon(Icons.check_circle_outline),
+                                      Text(
+                                        task.miniTasks!.length.toString() +
+                                            ' tasks',
+                                        style: const TextStyle(
+                                            color: Color(0xff000000),
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -146,7 +161,7 @@ class _HomePageState extends State<HomePage> {
                         animationDuration: 1200,
                         percent: completionPercentage,
                         center: Text(
-                          (completionPercentage*100).toString(),
+                          (completionPercentage * 100).toString(),
                           style: const TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 20.0),
                         ),
