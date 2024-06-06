@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:trackbuddy/models/MiniTask.dart';
+
 class Tasks {
     String? id;
     String title;
@@ -8,7 +10,7 @@ class Tasks {
     String? status;
     String? creator;
     List<dynamic>? users;
-    List<dynamic>? miniTasks;
+    List<MiniTask>? miniTasks;
     DateTime? createdAt;
     DateTime? updatedAt;
     int? v;
@@ -39,7 +41,7 @@ class Tasks {
         status: json["status"],
         creator: json["creator"],
         users: List<dynamic>.from(json["users"].map((x) => x)),
-        miniTasks: List<dynamic>.from(json["miniTasks"].map((x) => x)),
+        miniTasks: List<MiniTask>.from(json["miniTasks"].map((x) => MiniTask.fromJson(x))),
         createdAt: DateTime.parse(json["createdAt"]),
         updatedAt: DateTime.parse(json["updatedAt"]),
         v: json["__v"],

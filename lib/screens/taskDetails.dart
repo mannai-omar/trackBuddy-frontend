@@ -1,20 +1,28 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:trackbuddy/models/MiniTask.dart';
+import 'package:trackbuddy/models/Task.dart';
+import 'package:trackbuddy/services/miniTask_services.dart';
 
 class TaskDetails extends StatefulWidget {
-  const TaskDetails({super.key});
+  final Tasks task;
+  const TaskDetails({super.key, required this.task});
 
   @override
   State<TaskDetails> createState() => _TaskDetailsState();
 }
 
 class _TaskDetailsState extends State<TaskDetails> {
+  final MiniTaskService miniTaskService = MiniTaskService(); 
   bool isChecked = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xffF6F6F6),
       body: Padding(
-        padding: EdgeInsets.all(30),
+        padding: const EdgeInsets.fromLTRB(30,30,30,0),
         child: ListView(
           children: [
             appBar(context),
@@ -30,67 +38,89 @@ class _TaskDetailsState extends State<TaskDetails> {
               height: 30,
             ),
             checkist(),
+            
           ],
         ),
       ),
     );
   }
 
-  Column checkist() {
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      const Text(
-        'Checklist',
-        style: TextStyle(
+  Widget checkist() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Checklist',
+          style: TextStyle(
             color: Color(0xff000000),
             fontSize: 18,
-            fontWeight: FontWeight.w500),
-      ),
-      const SizedBox(
-        height: 10,
-      ),
-      GestureDetector(
-        onTap: () {},
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
-              border: Border.all(color: Colors.black, width: 1.5)),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Transform.scale(
-                scale: 1.5,
-                child: Checkbox(
-                  activeColor: Color(0xff53C2C5),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  value: isChecked,
-                  onChanged: (newValue) {
-                    setState(() {
-                      isChecked = newValue ?? false;
-                    });
-                  },
-                ),
-              ),
-              SizedBox(
-                width: 10,
-              ),
-              const Flexible(
-                child: Text(
-                  'Lorem ipsum dolor sit amet. Et itaque aperiam qui nesciunt accusamus sed pariatur debitis.',
-                  style: TextStyle(
-                      color: Color(0xff000000),
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500),
-                ),
-              ),
-            ],
+            fontWeight: FontWeight.w500,
           ),
         ),
-      )
-    ]);
+        const SizedBox(height: 10),
+        if (widget.task.miniTasks != null && widget.task.miniTasks!.isNotEmpty)
+        Column(
+          children: [
+            for (int index = 0; index < widget.task.miniTasks!.length; index++)
+              Column(
+                children: [
+                  minitask(widget.task.miniTasks![index]),
+                  const SizedBox(height: 15), 
+                ],
+              ),
+          ],
+        )
+        else
+          const Text('No mini tasks available'),
+      ],
+    );
+  }
+
+  GestureDetector minitask(MiniTask miniTask) {
+    return GestureDetector(
+      onTap: () {},
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(15),
+            border: Border.all(color: Colors.black, width: 1.5)),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Transform.scale(
+              scale: 1.5,
+              child: Checkbox(
+                activeColor: Color(0xff53C2C5),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                value: miniTask.status == 'completed' ? true : false,
+                onChanged: (newValue) {
+                  setState(() {
+                    miniTask.status == 'completed' ? miniTask.status = 'pending': miniTask.status = 'completed';
+                    //update status api
+                    //miniTaskService.updateMiniTaskStatus(miniTask.id);
+                  }); 
+                },
+              ),
+            ),
+            const SizedBox(
+              width: 10,
+            ),
+            Flexible(
+              child: Text(
+                miniTask.description,
+                style: const TextStyle(
+                    color: Color(0xff000000),
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Row membersAndDeadlineRow() {
@@ -127,12 +157,14 @@ class _TaskDetailsState extends State<TaskDetails> {
           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
           decoration: BoxDecoration(
               color: Colors.grey[200], borderRadius: BorderRadius.circular(15)),
-          child: const Row(
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              Icon(Icons.access_time_rounded),
-              SizedBox(width: 5,),
-              Text(
+              const Icon(Icons.access_time_rounded),
+              const SizedBox(
+                width: 5,
+              ),
+              const Text(
                 'Deadline: ',
                 style: TextStyle(
                     color: Color(0xff000000),
@@ -140,8 +172,8 @@ class _TaskDetailsState extends State<TaskDetails> {
                     fontWeight: FontWeight.w500),
               ),
               Text(
-                'Feb 6',
-                style: TextStyle(
+                DateFormat('MMMM dd').format(widget.task.dueDate),
+                style: const TextStyle(
                     color: Color(0xff000000),
                     fontSize: 16,
                     fontWeight: FontWeight.bold),
@@ -154,23 +186,23 @@ class _TaskDetailsState extends State<TaskDetails> {
   }
 
   Column taskDescription() {
-    return const Column(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-          'Website for Rune.io',
-          style: TextStyle(
+          widget.task.title,
+          style: const TextStyle(
               color: Color(0xff000000),
               fontSize: 28,
               fontWeight: FontWeight.w700),
         ),
-        SizedBox(
+        const SizedBox(
           height: 10,
         ),
         Text(
-          'Lorem ipsum dolor sit amet. Et itaque aperiam qui nesciunt accusamus sed pariatur debitis. Qui incidunt sequi qui quidem repellat aut excepturi omnis ut error exercitationem et dolor nobis qui commodi quod est soluta dolorem.',
-          style: TextStyle(
+          widget.task.description,
+          style: const TextStyle(
               color: Color(0xff000000),
               fontSize: 14,
               fontWeight: FontWeight.w300,
@@ -211,10 +243,10 @@ Row appBar(context) {
         ),
       ),
       Container(
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
         decoration: BoxDecoration(
-            color: Color(0xffFEC347), borderRadius: BorderRadius.circular(15)),
-        child: Text(
+            color: const Color(0xffFEC347), borderRadius: BorderRadius.circular(15)),
+        child: const Text(
           'in progress',
           style: TextStyle(
               color: Color(0xff000000),

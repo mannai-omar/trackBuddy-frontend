@@ -26,7 +26,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       backgroundColor: const Color(0xffF6F6F6),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
+        padding: const EdgeInsets.fromLTRB(30, 30, 30, 0),
         child: ListView(
           children: [
             appBar(),
@@ -37,7 +37,10 @@ class _HomePageState extends State<HomePage> {
             const SizedBox(
               height: 20,
             ),
-            tasksList(context)
+            tasksList(context),
+            const SizedBox(
+              height: 20,
+            ),
           ],
         ),
       ),
@@ -49,21 +52,26 @@ class _HomePageState extends State<HomePage> {
         future: futureTasks,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('No tasks found.'));
+            return const Center(child: Text('No tasks found.'));
           } else {
             return ListView.separated(
               separatorBuilder: (BuildContext context, int index) {
-                return SizedBox(height: 15); 
+                return const SizedBox(height: 15);
               },
               shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
+              physics: const NeverScrollableScrollPhysics(),
               itemCount: snapshot.data!.length,
               itemBuilder: (BuildContext context, int index) {
                 Tasks task = snapshot.data![index];
+                int completedTasks = task.miniTasks!
+                    .where((miniTask) => miniTask.status == 'completed')
+                    .length;
+                double completionPercentage =
+                    task.miniTasks!.isNotEmpty ? (completedTasks / task.miniTasks!.length) : 0.0;
                 return Stack(
                   children: [
                     GestureDetector(
@@ -71,13 +79,13 @@ class _HomePageState extends State<HomePage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => TaskDetails()),
+                              builder: (context) => TaskDetails(task: task,)),
                         );
                       },
                       child: Container(
-                        height: 120,
+                        height: 110,
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 15, vertical: 15),
+                            horizontal: 15, vertical: 10),
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(15),
                             border:
@@ -97,16 +105,20 @@ class _HomePageState extends State<HomePage> {
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold),
                                 ),
-                                Text(
-                                  task.description,
-                                  style: const TextStyle(
-                                      color: Color(0xff000000),
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w300),
+                                SizedBox(
+                                  width: MediaQuery.of(context).size.width / 2,
+                                  child: Text(
+                                    task.description,
+                                    style: const TextStyle(
+                                        color: Color(0xff000000),
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w300),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
                                 ),
                                 Row(
                                   children: [
-                                    Icon(Icons.check_circle_outline),
+                                    const Icon(Icons.check_circle_outline),
                                     Text(
                                       task.miniTasks!.length.toString() +
                                           ' tasks',
@@ -128,18 +140,18 @@ class _HomePageState extends State<HomePage> {
                       top: 15,
                       bottom: 15,
                       child: CircularPercentIndicator(
-                        radius: 40.0,
+                        radius: 35.0,
                         lineWidth: 6.0,
                         animation: true,
                         animationDuration: 1200,
-                        percent: 0.7,
-                        center: const Text(
-                          "70.0%",
-                          style: TextStyle(
+                        percent: completionPercentage,
+                        center: Text(
+                          (completionPercentage*100).toString(),
+                          style: const TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 20.0),
                         ),
                         circularStrokeCap: CircularStrokeCap.round,
-                        progressColor: Colors.green,
+                        progressColor: const Color(0xffF26E56),
                       ),
                     )
                   ],
