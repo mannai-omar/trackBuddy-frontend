@@ -1,12 +1,13 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../models/Task.dart';
+import '../constants.dart';
 
 class TaskService {
   TaskService();
 
   Future<List<Tasks>> fetchTasks() async {
-    final response = await http.get(Uri.parse('http://10.0.2.2:3000/api/tasks'));
+    final response = await http.get(Uri.parse('$base_url/api/tasks'));
 
     if (response.statusCode == 200) {
       List<dynamic> data = json.decode(response.body);
@@ -19,7 +20,7 @@ class TaskService {
 
   Future<void> addTask(Tasks task) async {
     final response = await http.post(
-      Uri.parse('http://10.0.2.2:3000/api/tasks'),
+      Uri.parse('$base_url/api/tasks'),
       headers: {'Content-Type': 'application/json'},
       body: json.encode(task.toJson()),
     );

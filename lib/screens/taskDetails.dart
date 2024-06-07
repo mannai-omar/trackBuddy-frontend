@@ -151,15 +151,15 @@ class _TaskDetailsState extends State<TaskDetails> {
                   child: avatarWithBorder(
                       'https://img.freepik.com/psd-gratuit/illustration-3d-personne-lunettes-soleil_23-2149436200.jpg?w=740&t=st=1717496562~exp=1717497162~hmac=aaa80b7b95df9a0f7eaac2bddb58a8d21077807863468134dfce96b5744cccbe')),
               Positioned(
-                  left: 35,
+                  left: 30,
                   child: avatarWithBorder(
                       'https://img.freepik.com/psd-gratuit/illustration-3d-personne-lunettes-soleil_23-2149436180.jpg?w=740&t=st=1717591944~exp=1717592544~hmac=64269ae1fd2234b533e8c4891368e8556b8f81ede7c8742305e533b12e69c0ca')),
               Positioned(
-                  left: 70,
+                  left: 60,
                   child: avatarWithBorder(
                       'https://img.freepik.com/psd-gratuit/illustration-3d-personne-lunettes_23-2149436190.jpg?t=st=1717591944~exp=1717592544~hmac=d8f133ddd34ab3458f6a4c00de14bafa2ac9f75658c57694dcf04a00777162f6')),
               Positioned(
-                left: 105,
+                left: 90,
                 child: avatarWithBorder(
                   'https://img.freepik.com/psd-gratuit/illustration-3d-personne-aux-cheveux-veste-punk_23-2149436198.jpg',
                 ),
@@ -174,7 +174,7 @@ class _TaskDetailsState extends State<TaskDetails> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              const Icon(Icons.access_time_rounded),
+              const Icon(Icons.access_time_rounded,size: 18,),
               const SizedBox(
                 width: 5,
               ),
@@ -182,14 +182,14 @@ class _TaskDetailsState extends State<TaskDetails> {
                 'Deadline: ',
                 style: TextStyle(
                     color: Color(0xff000000),
-                    fontSize: 16,
+                    fontSize: 14,
                     fontWeight: FontWeight.w500),
               ),
               Text(
                 DateFormat('MMMM dd').format(widget.task.dueDate),
                 style: const TextStyle(
                     color: Color(0xff000000),
-                    fontSize: 16,
+                    fontSize: 14,
                     fontWeight: FontWeight.bold),
               ),
             ],

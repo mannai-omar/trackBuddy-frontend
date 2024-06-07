@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:trackbuddy/screens/login.dart';
 import 'package:trackbuddy/widgets/bottomNav.dart';
 
 void main() {
@@ -12,7 +13,8 @@ class MyApp extends StatelessWidget {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'track buddy',
-      home: BottomNav(),
+      //home: BottomNav(),
+      home: Login(),
     );
   }
 }
